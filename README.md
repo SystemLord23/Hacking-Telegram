@@ -24,8 +24,8 @@ pkg install git
 pkg install python
 pkg install php
 apt install python-pip
-git clone https://github.com/Vlad4747/HackingTelegram
-cd HackingTelegram
+git clone https://github.com/SystemLord23/Hacking-Telegram
+cd Hacking-Telegram
 pip3 install PySocks
 pip3 install pyaes
 pip3 install telegram
