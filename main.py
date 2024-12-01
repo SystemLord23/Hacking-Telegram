@@ -34,7 +34,7 @@ cls()
 print(banner)
 
 time.sleep(2)
-cls()
+
 phone = input(
     cyan+bold+'[+]\033[0m \033[01mEnter your phone with country code (eg: +92) >\033[0m ')
 
